@@ -1,0 +1,33 @@
+This file describes the starbase client data structure
+
+
+["inbox"]
+	[0]...[N]
+		["from"]
+		["date"]
+		["subject"]
+		["message"]
+
+["outbox"]
+	[0]...[N]
+		["from"]
+		["date"]
+		["subject"]
+		["message"]
+
+["friends"]
+	["uid"]
+		["url"]
+		["nick"] *
+		["alias"]
+		["shared_secret"]
+		["remote_access_key"]
+		["local_access_key"]
+
+["admin"]
+	["url"]
+	["name"]
+	["lastupdate"]
+
+
+* future version
