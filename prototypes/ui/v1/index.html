@@ -1,0 +1,375 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=us-ascii" />
+
+
+<title>Test</title>
+<!-- 
+
+  colors from http://kuler.adobe.com/#create/fromacolor 
+
+  bright: #F0F1F2
+  dark: #232625 modified #383D3C modified #656566
+  extrem highlight: #FF5629
+  bright highlight: #D2D9B8
+  dark highlight: #647362
+  
+  at some point we should replace the scrollbars with jscrollpane
+  http://jscrollpane.kelvinluck.com/
+
+-->
+<style>
+
+  body, html
+  {
+    font-family: sans;
+    color: #383D3C;
+  }
+
+  *
+  {
+    padding: 0 0 0 0; 
+    margin: 0 0 0 0;
+  }
+
+  #header
+  {
+    background-color: white;
+    color: #232625;
+    padding: 4px 4px 4px 4px;
+    height: 20px;
+    padding-left: 5px;
+    border-bottom: 1px solid #FF5629;
+  }
+
+  #contentcontainer
+  {
+    margin-top: 5px;
+    background-color: #FFFFFF;
+  }
+
+    .layoutcolumns
+    {
+      float: left;
+      border-right: 5px solid #FFFFFF;
+      height: 100%;
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
+
+    #friendlistcontainer
+    {
+      background-color: white;
+      width: 200px;
+      border-left: 5px solid #FFFFFF;
+    }
+
+    #messagelistcontainer
+    {
+      background-color: white;
+      width: 300px;
+    }
+
+    #mainviewportcontainer
+    {
+      background-color: white;
+      width: 500px;
+    }
+
+/* __________________________________________________________________________ */
+
+      #friendlist
+      {
+      }
+      
+        #friendlist li
+        {
+          border: 1px solid #656566;
+          color: #656566;
+          margin: 2px 0px 2px 0px;
+          padding: 2px 4px 2px 25px;
+          font-size: 12px;
+          list-style-type: none;
+          font-weight: bold;
+          cursor: pointer;
+        }
+        
+        #friendlist li:hover
+        {
+          background-color: #D2D9B8;
+        }
+        
+        #friendlist .invite
+        {
+          background: #F0F1F2 url(../icons/user_go.png) 2px 2px no-repeat;
+        }
+        
+        #friendlist .normalm
+        {
+          background: #F0F1F2 url(../icons/user_suit.png) 2px 2px no-repeat;
+        }
+        
+        #friendlist .normalf
+        {
+          background: #F0F1F2 url(../icons/user_female.png) 2px 2px no-repeat;
+        }
+        
+        #friendlist .ignore
+        {
+          background: #F0F1F2 url(../icons/user_delete.png) 2px 2px no-repeat;
+        }
+
+/* __________________________________________________________________________ */
+
+      #messagelist
+      {
+      }
+      
+        #messagelist li
+        {
+          background-color: #F0F1F2;
+          border: 1px solid #656566;
+          color: #656566;
+          margin: 2px 0px 2px 0px;
+          padding: 2px 4px 2px 25px;
+          font-size: 12px;
+          list-style-type: none;
+          font-weight: bold;
+          height: 30px;
+          cursor: pointer;
+        }
+        
+        #messagelist li:hover
+        {
+          background-color: #D2D9B8;
+        }
+        
+        #messagelist .invite
+        {
+          background: #F0F1F2 url(../icons/email_go.png) 2px 2px no-repeat;
+        }
+        
+        #messagelist .normal
+        {
+          background: #F0F1F2 url(../icons/email.png) 2px 2px no-repeat;
+        }
+        
+        #messagelist .date
+        {
+          float: right; 
+          font-weight: normal;
+        }
+         
+        #messagelist .normal .subjectnew
+        {
+          font-size: 10px;
+        }
+               
+        #messagelist .normal .subject
+        {
+          font-weight: normal; 
+          font-size: 10px;
+        }
+               
+        #messagelist .invite .subject
+        {
+          font-size: 10px;
+          color: #FF5629;
+        }
+
+/* __________________________________________________________________________ */
+
+      .mainpage
+      {
+        font-size: 12px;
+      }
+
+      .mainpage h3
+      {
+        font-size: 14px;
+        padding-bottom:4px;
+      }
+
+/* __________________________________________________________________________ */
+
+      #frienddetailpage
+      {
+        border: 1px solid #656566;
+        background-color: #F0F1F2;
+        margin: 2px 0px 2px 0px;
+        padding: 2px 4px 2px 4px;
+      }
+        
+/* __________________________________________________________________________ */
+        
+
+</style>
+
+<!-- styles needed by jScrollPane -->
+<link type="text/css" href="jquery.jscrollpane.css" rel="stylesheet" media="all" />
+
+<script type="text/javascript" src="jquery.js"></script>
+
+<!-- the mousewheel plugin - optional to provide mousewheel support -->
+<script type="text/javascript" src="jquery.mousewheel.js"></script>
+
+<!-- the jScrollPane script -->
+<script type="text/javascript" src="jquery.jscrollpane.min.js"></script>
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var viewportHeight = 
+      window.innerHeight ? window.innerHeight : $(window).height();
+    $('#contentcontainer').css({'height':(viewportHeight-35)+'px'});
+    $('.scroll-pane').jScrollPane({showArrows: true});
+    $(window).resize(function(){
+      var viewportHeight = 
+        window.innerHeight ? window.innerHeight : $(window).height();
+      $('#contentcontainer').css({'height':(viewportHeight-35)+'px'});
+      $('.scroll-pane').jScrollPane({showArrows: true});
+    });
+  });
+</script>
+
+
+</head><body>
+
+  <div id="header">
+    <h3>starba.se/<span style="color: rgb(255, 86, 41);">username</span></h3>
+  </div>
+
+  <div id="contentcontainer">
+
+    <div id="friendlistcontainer" class="layoutcolumns scroll-pane">
+      <ul id="friendlist">
+        <li class="normalf">Alice</li>
+        <li class="invite">Bob</li>
+        <li class="ignore">Carol</li>
+        <li class="normalm">Dave</li>
+        <li class="normalf">Eve</li>
+        <li class="normalf">Fran</li>
+        <li class="normalm">Gordon</li>
+        <li class="normalm">Isaac</li>
+        <li class="normalm">Ivan</li>
+        <li class="normalm">Julian</li>
+        <li class="normalf">Mallory</li>
+        <li class="normalf">Matilda</li>
+        <li class="normalm">Oscar</li>
+        <li class="normalm">Pat</li>
+        <li class="normalm">Steve</li>
+        <li class="normalm">Trent</li>
+        <li class="normalm">Victor</li>
+        <li class="normalm">Walter</li>
+        <li class="normalf">Zoe</li>
+      </ul> 
+    </div>
+    
+    <div id="messagelistcontainer" class="layoutcolumns scroll-pane">
+      <ul id="messagelist">
+        <li class="normal">
+          Alice <span class="date">8:34pm 03.05.2010</span><br/>
+          <span class="subjectnew">This is the subject of a new message</span>
+        </li>
+        <li class="normal">
+          Alice <span class="date">5:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="invite">
+          Dave <span class="date">3:35pm 03.05.2010</span><br/>
+          <span class="subject">This is a new invite</span>
+        </li>
+        <li class="normal">
+          Alice <span class="date">2:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Gordon <span class="date">1:54pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Alice <span class="date">8:34pm 03.05.2010</span><br/>
+          <span class="subjectnew">This is the subject of a new message</span>
+        </li>
+        <li class="normal">
+          Pat <span class="date">5:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Gordon <span class="date">2:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Alice <span class="date">1:54pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Alice <span class="date">8:34pm 03.05.2010</span><br/>
+          <span class="subjectnew">This is the subject of a new message</span>
+        </li>
+        <li class="normal">
+          Walter <span class="date">5:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Walter <span class="date">2:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Pat <span class="date">1:54pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Dave <span class="date">8:34pm 03.05.2010</span><br/>
+          <span class="subjectnew">This is the subject of a new message</span>
+        </li>
+        <li class="normal">
+          Dave <span class="date">5:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Isaac <span class="date">2:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Alice <span class="date">1:54pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Alice <span class="date">8:34pm 03.05.2010</span><br/>
+          <span class="subjectnew">This is the subject of a new message</span>
+        </li>
+        <li class="normal">
+          Steve <span class="date">5:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Alice <span class="date">2:23pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+        <li class="normal">
+          Walter <span class="date">1:54pm 03.05.2010</span><br/>
+          <span class="subject">This is the subject of an old message</span>
+        </li>
+      </ul> 
+    </div>
+    
+    <div id="mainviewportcontainer" class="layoutcolumns scroll-pane">
+      <div id="frienddetailpage" class="mainpage">
+        <h3>Details of user Alice</h3>
+        <table>
+          <tr>
+            <td>URL:</td><td>http://localhost/dev/sg/usr/alice/</td>
+          </tr>
+          <tr>
+            <td>Status:</td><td>Friend</td>
+          </tr>
+        </table>
+        <a href="#">[Send Message]</a>
+        <a href="#">[Close]</a>
+      </div>
+    </div>
+
+  </div>
+
+</body></html>

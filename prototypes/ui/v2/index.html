@@ -1,0 +1,167 @@
+<head>
+
+  <title>stabase</title>
+  <link type="text/css" rel="stylesheet" href="style.css" media="screen"/>
+  <script type="text/javascript" src="jquery-1.5.2.js"></script>
+  <script type="text/javascript" src="core.js"></script>    
+  <script type="text/javascript" src="gui.js"></script>      
+  <script type="text/javascript" src="main.js"></script>                           
+     
+ 
+</head> 
+<body> 
+  
+    <h1>starbase</h1>
+    <!-- sidebar div --> 
+    <div id="sidebar"> 
+      <ul id="mailbox">
+        <li><a id="mailbox-inbox" href="javascript:void(0);" 
+          onclick="window.starbase.show_messagelist(true);">Inbox</a></li>
+        <li><a id="mailbox-sent" href="javascript:void(0);" 
+          onclick="window.starbase.show_messagelist(false);">Sent</a></li>
+        <li><a id="request-contact" href="javascript:void(0);" 
+          onclick="window.starbase.show_requester();">Add contact</a></li>
+      </ul>
+
+      <ul id="contacts">
+        <li><a href="#">Alice</a></li>
+        <li><a href="#">Bob</a></li>
+        <li><a href="#">Carol</a></li>
+        <li><a href="#">Dave</a></li>
+        <li><a href="#">Eve</a></li>
+        <li><a href="#">Fran</a></li>
+        <li><a href="#">Gordon</a></li>
+        <li><a href="#">Isaac</a></li>
+        <li><a href="#">Ivan</a></li>
+        <li><a href="#">Julian</a></li>
+        <li><a href="#">Mallory</a></li>
+        <li><a href="#">Matilda</a></li>
+        <li><a href="#">Oscar</a></li>
+        <li><a href="#">Pat</a></li>
+        <li><a href="#">Steve</a></li>
+        <li><a href="#">Trent</a></li>
+        <li><a href="#">Victor</a></li>
+        <li><a href="#">Walter</a></li>
+        <li><a href="#">Zoe</a></li>
+      </ul>
+      
+      <ul id="debug">
+        Test:
+        <li>
+          <a id="debug_entropy_overlay" href="javascript:void(0);" 
+            onclick="window.starbase.test_entropy_overlay();">
+            Entropy Overlay
+          </a>
+        </li>
+      </ul>
+    
+    </div> <!-- sidebar div --> 
+    
+    <!-- main div -->
+    <div id="main"> 
+    
+      
+      <div id="requester">
+        <ul id="requestelements">
+          <li>Add contact</li>
+          <li>
+            <label>URL</label>
+            <input type="text" name="requesturl" id="requesturl" />
+          </li>
+          <li>
+            <label>Alias</label>
+            <input type="text" name="requestalias" id="requestalias" />
+          </li>    
+          <li>
+            <textarea name="requestmessage" id="requestmessage"></textarea>  
+          </li>
+          <li><button type="submit">Send request</button></li>
+        </ul>
+      </div>
+      
+      <div id="messagelist">
+        <ul>
+          <li><a href="#"><strong>Alice - Larson scanner using 7400 series logic hardware</strong></a></li>
+          <li><a href="#">Carol - Christen in Gaza: Wie feiern sie Ostern?</a></li>
+          <li><a href="#">Steve - Apple To Beat Google On Cloud Music</a></li>
+          <li><a href="#">Walter - Amazon Denies Skynet's Involvement In AWS Outage</a></li>
+          <li><a href="#">Dave - Army Develops Android-Based Framework For Battlefield Ops</a></li>
+        </ul>
+      </div>
+      
+      
+      <div id="contactprofile">
+        <table>
+          <tr>
+            <td>Alias:</td>
+            <td id="contactprofile_alias">Alice</td>
+          </tr>
+          <tr>
+            <td>Name:</td>
+            <td id="contactprofile_name">Alice in Wonderland</td>
+          </tr>
+          <tr>
+            <td>Location:</td>
+            <td id="contactprofile_location">wonderland.com/alice</td>
+          </tr>
+          <tr class="key">
+            <td>Unique ID:</td>
+            <td id="contactprofile_id">0fd98c15860af0f1c236574f00b0ca74fd02f770502646915adeff42eea830c9</td>
+          </tr>
+          <tr class="key">
+            <td>Shared secret:</td>
+            <td id="contactprofile_ss">0fd98c15860af0f1c236574f00b0ca74fd02f770502646915adeff42eea830c9</td>
+          </tr>
+          <tr class="key">
+            <td>Remote access key:</td>
+            <td id="contactprofile_rak">aca5cb5066c6830bb3a94ab1e4fcaa698dfb8f47fff1d2df85c45770863d0fe7</td>
+          </tr>
+          <tr class="key">
+            <td>Local access key:</td>
+            <td id="contactprofile_lak">ee63f82861674523ec6d5431df2a795fb909e2bbc6b7ab3d9fc65b59c75daa1d</td>
+          </tr>
+        </table>
+        <button type="submit" onclick="_s.show_composer()">Send Message</button>
+      </div>      
+      
+      <div id="composer">
+        <ul id="composeelements">
+          <li><label>To</label> <strong id="composer_to">Eve</strong></li>
+          <li>
+            <label>Subject</label>
+            <input type="text" name="subject" id="subject" />
+          </li>
+          <li>
+            <textarea name="message" id="message"></textarea>  
+          </li>
+          <li><button type="submit">Send</button></li>
+        </ul>
+      </div>
+      
+      <div id="reader">
+        <ul id="readerelements">
+          <li id="readersubject">Japans Regierung verabschiedet Sonderhaushalt</li>
+          <li id="readerfromto">From Bob to me received 4 hours ago</li>
+          <li>
+            <p>
+              Die japanische Regierung hat einen Sonderhaushalt zur Bewältigung der Erdbebenkatastrophe vorgelegt. Das Kabinett von Ministerpräsident Naoto Kan einigte sich auf einen Etatentwurf von mehr als 4,02 Billionen Yen (33,4 Milliarden Euro). Er soll am nächsten Donnerstag dem Parlament vorgelegt und voraussichtlich am 2. Mai verabschiedet werden.
+            </p>
+            <p>
+              Damit soll unter anderem die Beseitigung von Trümmern, der Wiederaufbau von Straßen und Häfen sowie die Errichtung von Behelfshäusern und Schulen finanziert werden, hieß es in japanischen Medien. Die Regierung schätzt die Schäden auf 210 Milliarden Euro. Nicht eingerechnet sind die finanziellen Konsequenzen der Katastrophe im Atomkraftwerk Fukushima.
+            </p>
+            <p>
+              Um die ohnehin schon maroden Staatsfinanzen nicht noch weiter durch neue Staatsanleihen zu belasten, werden zur Finanzierung des Nachtragshaushalts unter anderem zuvor geplante Ausgaben wie die Erhöhung des Kindergeldes gestrichen. Einige Politiker halten allerdings weitere Nachtragshaushalte für erforderlich. Japan hat unter allen Industrieländern die höchsten Staatsschulden, die sich inzwischen auf rund 200 Prozent des Bruttoinlandsprodukt <a href="#">belaufen</a>.
+            </p>
+          </li>
+        </ul>
+      </div>
+      
+    </div> <!-- main div -->
+
+    <div id="entropy_overlay"></div>
+    <div id="entropy_overlay_message">
+        The random number generator needs entropy.<br/> 
+        Please move the mouse to charge the buffers.
+    </div>
+
+</body>
