@@ -1,0 +1,63 @@
+The starbase system allowes encrypted message exchange trough a server that
+can not read the exchanged messages. 
+
+* marks secondary aims, which are not ment to be implemented in the prototype,
+but are thought of, to be implemented later on.
+
+Ones starbase home server can entierly be used as a plain data storage server,
+where business logic is fetched from an indipendent source.*
+
+Encryption and handling of personal data is done entierly on client side.
+
+The first implementation should work over http. 
+Therefore on client side javascript is used and on the server side there is
+python. (python because its for girls).
+
+Principle of the dead drop
+A client is responsible for delivering its messages to the receivers home
+server, 
+and the client is responsible for fetchiing received messages from the
+own home server.
+
+partitions of a home server
+The home server consists of two partitions. The first partition is the users
+encrypted blob (encrypted user blob struct), and the second partition contains
+for the admin readable business data and enrypted messages which are stored
+for its user to be picked up.
+
+authorizing people to drop messages at ones home server
+Friends are allowed to drop messages at ones home server. Optionally one can
+allow everyone to drop messages at ones home server.
+
+sending a friend request
+A friend request is a special message that is allowed to be dropped at the
+receiptiens home server when a captcha, which is send from the receiptiens
+home server, is filled out right.
+
+Diffie-Hellman
+While sending a friend request the first part of a Diffie-Hellman-Key-Exchange
+is sent. Also the auth key is send.
+
+Accepting a friend request
+With the received auth key, one is allowed to drop a message at the requesters
+home server and leave the second part of the Diffie-Hellman-Key-Exchange.
+
+The friendship is established. Trough the Diffie-Hellman-Key-Exchange there is
+a common secret, which from now on is used to encrypt data synchronous. 
+
+connecting to own home server
+The auth key generated from ones password authorizes one to fetch and write ones blob.
+
+	read message
+	When connecting to ones home server, messages in the inbox are moved to the inbox
+within the encrypted_user_blob_struct.
+
+connecting to a foreign home server
+The known access token authorizes one to drop a encrypted message at a foreign
+home server.
+
+	send message
+	When sending a message, it is encrypted with the shared secret of the
+receiptient and stored at the receptients home server.
+
+
