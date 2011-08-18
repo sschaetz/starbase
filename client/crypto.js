@@ -6,8 +6,8 @@ starbase.crypto.dh = function()
 {
 };
 
-starbase.crypto.dh = {
-  
+starbase.crypto.dh = 
+{  
   // p and g are taken from http://tools.ietf.org/html/rfc5114#section-2.3
   p: str2bigInt(
     "87A8E61DB4B6663CFFBBD19C651959998CEEF608660DD0F2" +
@@ -35,12 +35,18 @@ starbase.crypto.dh = {
     "184B523D1DB246C32F63078490F00EF8D647D148D4795451" +
     "5E2327CFEF98C582664B4C0F6CC41659", 16, 2048),
 
+  /**
+   * @brief generate the public key from a user secret
+   */
   generate_publickey: function(secret) 
   {
     var a = str2bigInt(secret, 16, 2048);
     return bigInt2str(powMod(this.g, a, this.p), 16);
   },
   
+  /**
+   * @brief generate the sharedsecret from the user secret and remote public key
+   */
   generate_sharedsecret: function(secret, remote_publickey) 
   {
     var a = str2bigInt(secret, 16, 2048);
@@ -50,6 +56,7 @@ starbase.crypto.dh = {
 };
 
 
+
 /**
  * derivate keys from password and salt
  */
@@ -57,19 +64,141 @@ starbase.crypto.derivation = function()
 {
 };
 
-starbase.crypto.derivation = {
+starbase.crypto.derivation = 
+{
+  // privatekey and authkey derivation differ in the number of iterations
 
-  generate_privatekey: function(password, salt, count) 
+  /**
+   * @brief generate the privatekey
+   * 
+   * This function generates the privatekey.
+   * 
+   * @param password password from which privatekey should be derived
+   * @param salt salt that should be used (optional)
+   * @param count number of iterations that should be used (optional)
+   * @param length size of the expected privatekey in bits (optional)
+   */
+  generate_privatekey: function(password, salt, count, length) 
   {
-    salt = typeof(salt) != 'undefined' ? salt : "2321db5305b388e2373e54d";
-    count = typeof(count) != 'undefined' ? count : 2000;
-    return sjcl.misc.pbkdf2(password, sjcl.codec.hex.toBits(salt), count, 160);
+    salt = typeof(salt) !== 'undefined' ? salt : "j1t22tKUAjs1huwgFULp";
+    count = typeof(count) !== 'undefined' ? count : 2000;
+    if(typeof(length) != 'undefined')
+      return sjcl.misc.pbkdf2(password, 
+        sjcl.codec.utf8String.toBits(salt), count, length);
+    else
+      return sjcl.misc.pbkdf2(password, 
+        sjcl.codec.utf8String.toBits(salt), count);
   },
   
-  generate_authkey: function(password, salt, count) 
+  /**
+   * @brief generate the authkey
+   * 
+   * This function generates the authkey.
+   * 
+   * @param password password from which authkey should be derived
+   * @param salt salt that should be used (optional)
+   * @param count number of iterations that should be used (optional)
+   * @param length size of the expected privatekey in bits (optional)
+   */
+  generate_authkey: function(password, salt, count, length) 
   {
-    salt = typeof(salt) != 'undefined' ? salt : "19ec222a13efb1d70008141";
-    count = typeof(count) != 'undefined' ? count : 1000;
-    return sjcl.misc.pbkdf2(password, sjcl.codec.hex.toBits(salt), count);
+    salt = typeof(salt) !== 'undefined' ? salt : "Tj2a3kbixcDU1XHS10Aw";
+    count = typeof(count) !== 'undefined' ? count : 1000;
+    if(typeof(length) !== 'undefined')
+      return sjcl.misc.pbkdf2(password, 
+        sjcl.codec.utf8String.toBits(salt), count, length);
+    else
+      return sjcl.misc.pbkdf2(password, 
+        sjcl.codec.utf8String.toBits(salt), count);
   }
+};
+
+
+
+/**
+ * encryption and decryption with AES algorithm
+ */
+starbase.crypto.aes = function() 
+{
+};
+
+starbase.crypto.aes = 
+{
+  /**
+   * @brief encrypts object (through JSON), key derived from password and salt
+   */
+  encrypt_object: function(password, object, salt) 
+  {
+    var key = starbase.crypto.derivation.generate_privatekey(password, salt);
+    return sjcl.json.encrypt(key, JSON.stringify(object));
+  },
+  
+  /**
+   * @brief encrypts object (through JSON), key derived from password and salt
+   */
+  decrypt_json: function(password, jsonstring, salt) 
+  {
+    var key = starbase.crypto.derivation.generate_privatekey(password, salt);
+    return JSON.parse(sjcl.json.decrypt(key, jsonstring));
+  }
+};
+
+starbase.crypto.encrypt_object = starbase.crypto.aes.encrypt_object;
+starbase.crypto.decrypt_json = starbase.crypto.aes.decrypt_json;
+
+
+
+/**
+ * random number handling
+ */
+starbase.crypto.random = function() 
+{
+};
+
+starbase.crypto.random = {
+
+  counter_: 0,
+  
+  start_wait_entropy: function() 
+  { console.log("start_wait_entropy original"); },
+  
+  wait_entropy: function(progress) 
+  {console.log("wait_entropy original " + progress); },
+  
+  stop_wait_entropy: function() 
+  { console.log("stop_wait_entropy original"); },
+  
+  register_callbacks: function(start, wait, stop)
+  {
+    this.start_wait_entropy = start;
+    this.wait_entropy = wait;
+    this.stop_wait_entropy = stop;
+  },
+  
+  
+  check_entropy()
+  {
+    if(this.counter_ < 5)
+    {
+      this.counter_++;
+      this.wait_entropy(this.counter_);
+      setTimeout("starbase.crypto.random.check_entropy()", 100);
+    }
+    else
+    {
+      this.stop_wait_entropy();
+      this.counter_ = 0;
+    }
+  },
+  
+  get: function(num)
+  {
+    if(counter_ < 5)
+    {
+      this.start_wait_entropy();
+      this.check_entropy();
+    }
+    return counter_;
+  }
+  
 };

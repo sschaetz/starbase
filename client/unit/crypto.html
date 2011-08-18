@@ -8,6 +8,7 @@
   type="text/css" media="screen" />
 <script src="http://code.jquery.com/qunit/git/qunit.js"></script>
 
+<script src="../libs/json2.min.js"></script>
 <script src="../libs/sjcl-0.8.min.js"></script>
 <script src="../libs/bigint-5.4.min.js"></script>
 <script src="../starbase.js"></script>
@@ -117,14 +118,103 @@ module("PKCS key derivation test");
 
 test("key derivation", function() 
 {
-  expect(2);
-  var P = "password";
-  var S = "salt";
-  var c = 4096;
+  expect(5);
   
-  alert(sjcl.codec.hex.fromBits(starbase.crypto.derivation.generate_privatekey(P, S, c)));
+  var P1 = "password";
+  var S1 = "salt";
+  var c1 = 1;
+  var DK1 = "120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b"
+  
+  var P2 = "password";
+  var S2 = "salt";
+  var c2 = 2;
+  var DK2 = "ae4d0c95af6b46d32d0adff928f06dd02a303f8ef3c251dfd6e2d85a95474c43"
+  
+  var P3 = "password";
+  var S3 = "salt";
+  var c3 = 4096;
+  var DK3 = "c5e478d59288c841aa530db6845c4c8d962893a001ce4e11a4963873aa98134a"
+  
+  var P4 = "password";
+  var S4 = "salt";
+  var c4 = 16777216;
+  var DK4 = "cf81c66fe8cfc04d1f31ecb65dab4089f7f179e89b3b0bcb17ad10e3ac6eba46"
+  
+  var P5 = "passwordPASSWORDpassword";
+  var S5 = "saltSALTsaltSALTsaltSALTsaltSALTsalt";
+  var c5 = 4096;
+  var dklen5 = 40*8;
+  var DK5 = "348c89dbcbd32b2f32d814b8116e84cf2b17347e" + 
+            "bc1800181c4e2a1fb8dd53e1c635518c7dac47e9"
+  
+  var P6 = "pass\u0000word";
+  var S6 = "sa\u0000lt";
+  var c6 = 4096;
+  var dklen6 = 16*8;
+  var DK6 = "89b69d0516f829893c696226650a8687"
+  
+  equal(
+    sjcl.codec.hex.fromBits(
+      starbase.crypto.derivation.generate_privatekey(P1, S1, c1)
+    ), DK1, "1st example ok");
+    
+  equal(
+    sjcl.codec.hex.fromBits(
+      starbase.crypto.derivation.generate_privatekey(P2, S2, c2)
+    ), DK2, "2nd example ok");
+    
+  equal(
+    sjcl.codec.hex.fromBits(
+      starbase.crypto.derivation.generate_privatekey(P3, S3, c3)
+    ), DK3, "3rd example ok");
+
+  // this test takes a very long time, we don't usually run it
+  //equal(
+  //  sjcl.codec.hex.fromBits(
+  //    starbase.crypto.derivation.generate_privatekey(P4, S4, c4)
+  //  ), DK4, "4th example ok");
+    
+  equal(
+    sjcl.codec.hex.fromBits(
+     starbase.crypto.derivation.generate_privatekey(P5, S5, c5, dklen5)
+    ), DK5, "5th example ok");
+    
+  equal(
+    sjcl.codec.hex.fromBits(
+      starbase.crypto.derivation.generate_privatekey(P6, S6, c6, dklen6)
+    ), DK6, "6th example ok");
+
 
 });
+
+
+
+
+
+module("encryption and decryption");
+
+test("encryption and decryption", function() 
+{
+  expect(3);
+  var testdata = ['e', {pluribus: 'unum'}]
+  
+  deepEqual(testdata, testdata, "equal operator"); 
+  
+  enc = starbase.crypto.encrypt_object("ey4Tk271mPZpjZEUVGdO", testdata);
+  dec = starbase.crypto.decrypt_json("ey4Tk271mPZpjZEUVGdO", enc);
+  
+  deepEqual(dec, testdata, "encryption -> decryption"); 
+  
+  enc = starbase.crypto.encrypt_object("ey4Tk271mPZpjZEUVGdO", 
+    testdata, "0FTWLpnX9SGZUcwoTVoF");
+  dec = starbase.crypto.decrypt_json("ey4Tk271mPZpjZEUVGdO", 
+    enc, "0FTWLpnX9SGZUcwoTVoF");
+  
+  deepEqual(dec, testdata, "encryption -> decryption with salt"); 
+  
+});
+
+
 
 
 });
