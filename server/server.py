@@ -1,5 +1,6 @@
 
 import ConfigParser
+import sqlite3
 
 from werkzeug.wrappers import Response, Request
 from werkzeug.routing import Map, Rule
@@ -35,7 +36,10 @@ class starbase(object):
       # only proceed if user exists
       if not self.user_exists(values['user']):
         raise NotFound()
-        
+      
+      self.db = \
+        sqlite3.connect(self.user_data_folder + values['user'] + '.sql')
+      
       return getattr(self, 'on_' + endpoint)(request, **values)
     except HTTPException, e:
       return e
@@ -56,6 +60,8 @@ class starbase(object):
     return Response("on_default " + user)
 
   def on_load_data(self, request, user):
+    print request
+    print request.form['authkey']
     return Response("load_data")
     
   def on_store_data(self, request, user):
@@ -80,6 +86,10 @@ class starbase(object):
     user_database = self.user_data_folder + user + '.sql'
     print user_database
     return file_exists(user_database)
+    
+  def user_authenticate(self, authkey):
+    db.execute('SELECT autkey FROM admin WHERE authkey = ?', (authkey))
+    print db
     
 
 def create_app():

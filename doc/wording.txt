@@ -1,0 +1,29 @@
+This document describes the wording for certain important items. These labels
+should be used throughout the project to avoid confusion and to simplify the
+discussion.
+
+datablob:
+an encrypted blob that contains all the data the user and user application
+requires to function, stores messages (sent, received) friends lists, 
+accesstokens etc.
+
+accesstoken: 
+a string used by friends to drop messages at a users inbox, specified by the
+user and transmitted to the friend
+
+authkey:
+a string used by a user to authenticate himself to the server, so that the
+server sends the user the datablob, it is derived from the password
+
+sharedsecret:
+a string used by two friends to encrypt their communication, the sharedsecret
+is established through a diffie hellman key exchange
+
+privatekey:
+a string used to de- and encrypt the datablob, it is derived from the password
+
+password:
+a string specified by the user, from this string the authkey and the privatekey
+is derived
+
+
