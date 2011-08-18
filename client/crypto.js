@@ -50,4 +50,26 @@ starbase.crypto.dh = {
 };
 
 
+/**
+ * derivate keys from password and salt
+ */
+starbase.crypto.derivation = function() 
+{
+};
 
+starbase.crypto.derivation = {
+
+  generate_privatekey: function(password, salt, count) 
+  {
+    salt = typeof(salt) != 'undefined' ? salt : "2321db5305b388e2373e54d";
+    count = typeof(count) != 'undefined' ? count : 2000;
+    return sjcl.misc.pbkdf2(password, sjcl.codec.hex.toBits(salt), count, 160);
+  },
+  
+  generate_authkey: function(password, salt, count) 
+  {
+    salt = typeof(salt) != 'undefined' ? salt : "19ec222a13efb1d70008141";
+    count = typeof(count) != 'undefined' ? count : 1000;
+    return sjcl.misc.pbkdf2(password, sjcl.codec.hex.toBits(salt), count);
+  }
+};

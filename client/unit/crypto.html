@@ -8,6 +8,7 @@
   type="text/css" media="screen" />
 <script src="http://code.jquery.com/qunit/git/qunit.js"></script>
 
+<script src="../libs/sjcl-0.8.min.js"></script>
 <script src="../libs/bigint-5.4.min.js"></script>
 <script src="../starbase.js"></script>
 <script src="../crypto.js"></script>
@@ -105,6 +106,23 @@ test("secret shared key calculation", function()
            
   equal(starbase.crypto.dh.generate_sharedsecret(xA, yB), Z, "1st example ok"); 
   equal(starbase.crypto.dh.generate_sharedsecret(xB, yA), Z, "2nd example ok"); 
+
+});
+
+
+
+module("PKCS key derivation test");
+
+// all values are taken from http://stackoverflow.com/questions/5130513/
+
+test("key derivation", function() 
+{
+  expect(2);
+  var P = "password";
+  var S = "salt";
+  var c = 4096;
+  
+  alert(sjcl.codec.hex.fromBits(starbase.crypto.derivation.generate_privatekey(P, S, c)));
 
 });
 
