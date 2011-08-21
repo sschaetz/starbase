@@ -157,48 +157,55 @@ starbase.crypto.random = function()
 
 starbase.crypto.random = {
 
-  counter_: 0,
-  
   start_wait_entropy: function() 
   { console.log("start_wait_entropy original"); },
   
-  wait_entropy: function(progress) 
-  {console.log("wait_entropy original " + progress); },
+  update_progress: function()
+  { console.log("update_progress original ", + sjcl.random.getProgress()); },
   
   stop_wait_entropy: function() 
   { console.log("stop_wait_entropy original"); },
-  
-  register_callbacks: function(start, wait, stop)
+
+  // set custom callbacks for start, update and stop events of the rng 
+  register_callbacks: function(start, update, stop)
   {
     this.start_wait_entropy = start;
-    this.wait_entropy = wait;
+    this.wait_entropy = update;
     this.stop_wait_entropy = stop;
   },
   
-  
-  check_entropy()
+  /**
+   * if random numbers are required, the function requiring the numbers should
+   * be wrapped as a callback to check_entropy
+   */
+  check_entropy: function(callback)
   {
-    if(this.counter_ < 5)
+    // not enough entropy
+    if(!sjcl.random.isReady())
     {
-      this.counter_++;
-      this.wait_entropy(this.counter_);
-      setTimeout("starbase.crypto.random.check_entropy()", 100);
+      starbase.crypto.random.start_wait_entropy();
+      
+     // if there is progress fire event
+      sjcl.random.addEventListener("progress", 
+        function()
+        {
+          starbase.crypto.random.update_progress();
+        }
+      );
+      
+      // if we have entropy call stop_wait_entropy and callback
+      sjcl.random.addEventListener("seeded", 
+        function()
+        {
+          starbase.crypto.random.stop_wait_entropy();
+          callback();
+        }
+      );
     }
     else
     {
-      this.stop_wait_entropy();
-      this.counter_ = 0;
+      callback();
     }
-  },
-  
-  get: function(num)
-  {
-    if(counter_ < 5)
-    {
-      this.start_wait_entropy();
-      this.check_entropy();
-    }
-    return counter_;
   }
   
 };
