@@ -32,7 +32,7 @@ class basic_test(unittest.TestCase):
     self.user_data_folder = self.config.get('general', 'user_data_folder')
     self.domain = self.config.get('general', 'domain')
 
-  def test_create_users(self):
+  def test_001_create_users(self):
     url = self.domain + "createuser"
     result = fire_request_json(url, {'user': 'seb', 'authkey': 'sebauthkey'})
     self.assertEqual(result, "OK")
@@ -43,7 +43,7 @@ class basic_test(unittest.TestCase):
     self.assertRaises(urllib2.HTTPError, fire_request_json, 
       url, {'user': 'clau', 'authkey': 'clauauthkey'})
   
-  def test_store_data(self):
+  def test_002_store_data(self):
     # store data
     result = fire_request_json(self.domain + "seb/store_data", 
       {'authkey': 'sebauthkey', 'data': 'mydata'})
@@ -52,6 +52,67 @@ class basic_test(unittest.TestCase):
     result = fire_request_json(self.domain + "seb/load_data/sebauthkey")
     self.assertEqual(result, "mydata")
     
+  def test_003_add_accesstokens(self):
+    # add 1 accesstoken
+    result = fire_request_json(self.domain + "seb/add_accesstokens", 
+      {'authkey': 'sebauthkey', 'accesstokens': json.dumps(["token1"])})
+    self.assertEqual(result, "OK")
+    # add multiple accesstokens
+    result = fire_request_json(self.domain + "seb/add_accesstokens", 
+      {
+        'authkey': 'sebauthkey', 
+        'accesstokens': json.dumps(["token2", "token3"])
+      })
+    self.assertEqual(result, "OK")
+    # add token for testing purposes
+    result = fire_request_json(self.domain + "seb/add_accesstokens", 
+      {'authkey': 'sebauthkey', 'accesstokens': json.dumps(["token4"])})
+    self.assertEqual(result, "OK")
+    
+  def test_004_remove_accesstokens(self):
+    # remove 1 accesstoken
+    result = fire_request_json(self.domain + "seb/remove_accesstokens", 
+      {'authkey': 'sebauthkey', 'accesstokens': json.dumps(["token1"])})
+    self.assertEqual(result, "OK")
+    # remove multiple accesstokens
+    result = fire_request_json(self.domain + "seb/remove_accesstokens", 
+      {
+        'authkey': 'sebauthkey', 
+        'accesstokens': json.dumps(["token2", "token3"])
+      })
+    self.assertEqual(result, "OK")
+    
+  def test_005_send_message(self):
+    # send message
+    result = fire_request_json(self.domain + "seb/inbox", 
+      {'accesstoken': 'token4', 'message': 'HI!'})
+    self.assertEqual(result, "OK")
+    
+  def test_006_load_messages(self):
+    # get messages
+    result = fire_request_json(self.domain + "seb/load_messages", 
+      {'authkey': 'sebauthkey'})
+    self.assertEqual(result[0][0], "HI!")
+    self.assertEqual(result[0][1], "token4")
+
+  def test_007_send_messages(self):
+    # send messages
+    result = fire_request_json(self.domain + "seb/inbox", 
+      {'accesstoken': 'token4', 'message': 'message2'})
+    self.assertEqual(result, "OK")
+    result = fire_request_json(self.domain + "seb/inbox", 
+      {'accesstoken': 'token4', 'message': 'message3'})
+    self.assertEqual(result, "OK")
+    
+  def test_008_load_messages(self):
+    # get messages
+    result = fire_request_json(self.domain + "seb/load_messages", 
+      {'authkey': 'sebauthkey'})
+    self.assertEqual(result[0][0], "message2")
+    self.assertEqual(result[0][1], "token4")
+    self.assertEqual(result[1][0], "message3")
+    self.assertEqual(result[1][1], "token4")
+
 # clear create or clear folder
 def setup():
   # get configuration information

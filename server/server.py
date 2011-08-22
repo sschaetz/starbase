@@ -2,6 +2,7 @@
 import ConfigParser
 import sqlite3
 import json
+import time
 
 from werkzeug.wrappers import Response, Request
 from werkzeug.routing import Map, Rule
@@ -41,7 +42,7 @@ class starbase(object):
       Rule('/<user>/load_data/<authkey>', endpoint='load_data'),
       Rule('/<user>/store_data', endpoint='store_data'),
       Rule('/<user>/load_messages', endpoint='load_messages'),
-      Rule('/<user>/inbox/<accesstoken>', endpoint='inbox'),
+      Rule('/<user>/inbox', endpoint='inbox'),
       Rule('/<user>/add_accesstokens', endpoint='add_accesstokens'),
       Rule('/<user>/remove_accesstokens', endpoint='remove_accesstokens'),
       Rule('/createuser', endpoint='createuser'),
@@ -81,13 +82,13 @@ class starbase(object):
   # here are the responders -----
   
   def on_root(self, request):
-    return Response("on_root")
+    return Response("This is starbase!")
     
   def on_default(self, request, user):
-    return Response("on_default " + user)
+    return Response("This is the starbase home of " + user + ".")
 
   def on_load_data(self, request, user, authkey):
-    self.user_authenticate(authkey)
+    self.authenticate_user(authkey)
     return data_response(self.get_data())
     
   def on_store_data(self, request, user):
@@ -96,24 +97,43 @@ class starbase(object):
     if not 'data' in request.form:
       raise BadRequest()
       
-    self.user_authenticate(request.form['authkey'])
+    self.authenticate_user(request.form['authkey'])
     self.set_data(request.form['data'])
     return success_response()
     
   def on_load_messages(self, request, user):
     if not 'authkey' in request.form:
       raise Unauthorized()
-    self.user_authenticate(request.form['authkey'])
-    return Response("load_messages")
+    self.authenticate_user(request.form['authkey'])
+    return data_response(self.get_messages())
     
-  def on_inbox(self, request, user, accesstoken):
-    return Response("inbox " + user + " " + accesstoken)
+  def on_inbox(self, request, user):
+    if not 'accesstoken' in request.form:
+      raise Unauthorized()
+    if not 'message' in request.form:
+      raise BadRequest()
+    self.authenticate_friend(request.form['accesstoken'])
+    self.store_message(request.form['message'], request.form['accesstoken'])
+    return success_response()
     
   def on_add_accesstokens(self, request, user):
-    return Response("add_accesstokens")
+    if not 'authkey' in request.form:
+      raise Unauthorized()
+    self.authenticate_user(request.form['authkey'])
+    if not 'accesstokens' in request.form:
+      print "no access tokens"
+      raise BadRequest()
+    self.insert_accesstokens(request.form['accesstokens'])
+    return success_response()
  
   def on_remove_accesstokens(self, request, user):
-    return Response("remove_accesstokens")
+    if not 'authkey' in request.form:
+      raise Unauthorized()
+    self.authenticate_user(request.form['authkey'])
+    if not 'accesstokens' in request.form:
+      raise BadRequest()
+    self.delete_accesstokens(request.form['accesstokens'])
+    return success_response()
     
   # create a new user  
   def on_createuser(self, request):
@@ -138,14 +158,29 @@ class starbase(object):
   
   # database functions -----
   
-  def user_authenticate(self, authkey):
+  def authenticate_user(self, authkey):
     c = self.db.cursor()
     c.execute('SELECT 1 FROM admin WHERE authkey = ?', [authkey])
     rows = len(c.fetchall())
     c.close()
     if rows != 1:
       raise Unauthorized()
-  
+      
+  def authenticate_friend(self, accesstoken):
+    c = self.db.cursor()
+    c.execute('SELECT 1 FROM friends WHERE accesstoken = ?', [accesstoken])
+    rows = len(c.fetchall())
+    c.close()
+    if rows < 1:
+      raise Unauthorized()
+      
+  def store_message(self, message, accesstoken):
+    c = self.db.cursor()
+    c.execute("INSERT INTO inbox VALUES (?, ?, ?)", 
+      [message, accesstoken, time.time()])
+    self.db.commit()
+    c.close()
+      
   def get_data(self):
     c = self.db.cursor()
     c.execute('SELECT data FROM blobs WHERE name = ?', ["datablob"])
@@ -158,6 +193,35 @@ class starbase(object):
       [data, "datablob"])
     self.db.commit()
     return
+    
+  def insert_accesstokens(self, accesstokens):
+    try:
+      c = self.db.cursor()
+      for token in json.loads(accesstokens):
+        c.execute('INSERT INTO friends VALUES (?)', [token])
+      self.db.commit()
+      c.close()
+    except:
+      raise BadRequest("accesstokens could not be inserted")
+    
+  def delete_accesstokens(self, accesstokens):
+    try:
+      c = self.db.cursor()
+      for token in json.loads(accesstokens):
+        c.execute('DELETE FROM friends WHERE accesstoken = ?', [token])
+      self.db.commit()
+      c.close()
+    except:
+      raise BadRequest("accesstokens could not be deleted")
+    
+  def get_messages(self):
+    c = self.db.cursor()
+    c.execute('SELECT * FROM inbox')
+    data = c.fetchall()
+    c.execute("DELETE FROM inbox")
+    self.db.commit()
+    c.close()
+    return data
     
 
 def create_app():
