@@ -1,4 +1,4 @@
-
+import os
 import ConfigParser
 import sqlite3
 import json
@@ -137,9 +137,10 @@ class starbase(object):
     
   # create a new user  
   def on_createuser(self, request):
+    print request.form
     if not 'user' in request.form or not 'authkey' in request.form:
       raise BadRequest("missing user or authkey")
-      
+    logging.info('user and authkey set')
     user = request.form['user']
     authkey = request.form['authkey']
     if self.user_exists(user):
@@ -226,6 +227,9 @@ class starbase(object):
 
 def create_app():
   app = starbase()
+  app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
+     '/static':  ''
+  })
   return app
     
 

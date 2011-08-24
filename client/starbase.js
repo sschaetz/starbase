@@ -9,8 +9,18 @@
  */
 var starbase = 
 {
+/**
+   * @namespace configuration 
+   */
+  config: function() {},
+  
   /**
    * @namespace cryptographic functions 
    */
-  crypto: {}
+  crypto: {},
+  
+  /**
+   * @namespace gui functions 
+   */
+  gui: {}
 };

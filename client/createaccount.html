@@ -1,0 +1,85 @@
+<head>
+
+  <title>starbase: Account Creation</title>
+  
+  <link type="text/css" rel="stylesheet" href="style.css" media="screen"/>
+  
+  <script type="text/javascript" src="libs/jquery-1.6.2.min.js"></script>
+  <script type="text/javascript" src="libs/sjcl-0.8.min.js"></script>
+  <script type="text/javascript" src="libs/json2.min.js"></script>
+  <script type="text/javascript" src="libs/bigint-5.4.min.js"></script>
+  <script type="text/javascript" src="starbase.js"></script>
+  <script type="text/javascript" src="config.js"></script>
+  <script type="text/javascript" src="crypto.js"></script>
+  <script type="text/javascript" src="gui.js"></script>
+  
+  <script>
+  
+    $(document).ready(function() 
+    {
+      $.ajaxSetup ({  
+        cache: false  
+      });  
+      console.log(starbase.config.host)
+    });
+  
+  </script>     
+ 
+</head> 
+<body> 
+  
+  <h2>starbase: Account Creation</h2>
+  
+  <br/>
+  
+  Create an account for the starbase social network prototype. 
+  <p style="color: red;">
+    Please note that this is a prototype. Do not reveal or store any sensitive 
+    information here. <br/>
+    Do not rely on the availability of this service.
+  </p>
+
+  
+  <div id="regstatusbox" style="visibility: hidden;">Hihi, I'm hidden</div>
+
+  
+  <div>
+    <ul id="regform">
+      <li>
+        <label>Username</label>
+        <input type="text" name="user" id="user" />
+        <p class="information">
+          Your public identifier will be dev.starba.se/username
+        </p>
+      </li>
+      <li>
+        <label>Password</label>
+        <input type="text" name="password" id="password" />
+      </li>
+      <li>
+        <label>Repeat Password</label>
+        <input type="text" name="repassword" id="repassword" />
+        <p class="information" style="color: red;">
+          This password is the only thing that keeps your data secure. 
+          Choose a password with lots of entropy. <br/>
+          <strong>Your passsword can not be recovered.</strong>
+        </p>
+      </li>
+      <li>
+        <label>Invite Key</label>
+        <input type="text" name="invite" id="invite" />
+        <p class="information">
+          Starbase is currently invite-only. Please enter the key you were given.
+        </p>
+      </li>
+      <li>
+        <br/>
+        <button type="submit" onclick="starbase.gui.registration.register()">
+          Register
+        </button>
+      </li>
+    </ul>
+  </div>
+  
+  
+</body>
