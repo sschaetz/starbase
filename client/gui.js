@@ -18,14 +18,18 @@ starbase.gui.registration = {
     $.ajax({
       type: "POST",
       url: starbase.config.host + "/createuser",
-      data: { "user": "john", "authkey": "2pm" },
+      data: { "user": $("#user").val(), 
+        "authkey": 
+          starbase.crypto.derivation.generate_privatekey($("#password").val()) 
+        },
       success: function(response) 
       {
-        console.log("Yay! " + response);
+        sbox.html("Account created!");
+        sbox.css("visibility", "visible");
       },
       error: function(response)
       {
-        console.log("Nay! " + response);
+        
       }
     });
   },

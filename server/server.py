@@ -228,7 +228,7 @@ class starbase(object):
 def create_app():
   app = starbase()
   app.wsgi_app = SharedDataMiddleware(app.wsgi_app, {
-     '/static':  ''
+     '/static':  os.path.join(os.path.dirname(__file__), 'static')
   })
   return app
     
